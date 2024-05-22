@@ -3,11 +3,11 @@ import time
 import os
 
 isdead = False
-money = 100
+money = 16
 action_left = 3
 days_survived = 0
-iron_ingots = 10
-meals = 0
+iron_ingots = 0
+meals = 1
 hunger = 0
 crafted_item = []
 chosen_job = ""
