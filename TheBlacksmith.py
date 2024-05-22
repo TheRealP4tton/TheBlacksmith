@@ -10,11 +10,26 @@ iron_ingots = 10
 meals = 0
 hunger = 0
 crafted_item = []
+chosen_job = ""
+char_name = ""
+professions = ["Woodcutter", "Miner", "Fisherman", "Herbalist"]
 
 def onStartup():
-    print("Welcome to The Blacksmith")
-    print("You will live the simple life of a blacksmith")
-    print("Work, craft items, and sell them")
+    global char_name
+    global chosen_job
+    global professions
+
+    print(" ____  _            _                  _ _   _     ")
+    print("| __ )| | __ _  ___| | _____ _ __ ___ (_) |_| |__  ")
+    print("|  _ \| |/ _` |/ __| |/ / __| '_ ` _ \| | __| '_ \ ")
+    print("| |_) | | (_| | (__|   <\__ \ | | | | | | |_| | | |")
+    print("|____/|_|\__,_|\___|_|\_\___/_| |_| |_|_|\__|_| |_|")
+    print()
+    print(input("Press Enter to continue..."))
+    os.system("cls")
+
+    print("You will live the simple life of a blacksmith.")
+    print("Work, craft items, and sell them to make money needed to survive.")
     print(input("Press Enter to continue..."))
     os.system("cls")
 
@@ -25,21 +40,196 @@ def onStartup():
     char_name = input("What would you like to be called?")
     os.system("cls")
 
+    while True:
+        if char_name == "":
+            print("Sadly you cannot be nameless. How fun would that be?")
+            print(input("Press Enter to continue..."))
+            os.system("cls")
+
+            char_name = input("What would you like to be called?")
+            os.system("cls")
+
+        else:
+            break
+
     print(f"Its been decided, you will be called {char_name} from here on out!")
-    print(f"Try to survive as long as you can...")
+    print(input("Press Enter to continue..."))
+    os.system("cls")
+
+    print(f"Besides just being a blacksmith, you also have the chance to choose a second profession.")
+    print(f"What will you choose?")
+    print(input("Press Enter to continue..."))
+    os.system("cls")
+
+    print(f"Please choose a secondary profession:")
+    print(f"1. Woodcutter")
+    print(f"2. Miner")
+    print(f"3. Fisherman")
+    print(f"4. Herbalist")
+    user_input = int(input("Which will you choose? "))
+    os.system("cls")
+
+    chosen_job = professions[(user_input-1)]
+
+    print(f"So you've chosen to be a {chosen_job}, good choice!")
+    print(input("Press Enter to continue..."))
+    os.system("cls")
+
+    print(f"Let the story of {char_name} the Blacksmith unfold")
+    print(f"Try to survive as long as you can.")
     print(input("Press Enter to continue..."))
     os.system("cls")
 
 def daily_work():
     global money
     global action_left
-    action_left -= 1
-    days_work = random.randint(1, 8)
-    print(f"You go to work and earn {days_work}. Your total is now {days_work + money}" )
-    money = days_work + money
-    print("")
-    print(input("Press Enter to continue..."))
-    os.system("cls")
+    global chosen_job
+    global char_name
+    global professions
+    random_int = random.randint(1,3)
+
+    if chosen_job == professions[0]:
+        if random_int == 1:
+            earned_daily = random.randint(1,3)
+            action_left -= 1
+            print(f"You went to the local log-yard and helped the locals split some wood.")
+            print(f"Although easy, they paid you {earned_daily} silver coins")
+            money += earned_daily
+            print(f"You now have {money} silver coins!")
+            print()
+            print(input("Press Enter to continue..."))
+            os.system("cls")
+
+        elif random_int == 2:
+            earned_daily = random.randint(2,5)
+            action_left -= 1
+            print(f"Your neighbor told you about a funny looking tree he found on his walk.")
+            print(f"You decide to go chop it down. Using your mule and cart, you bring it to the local carpenter.")
+            print(f"He pays you {earned_daily} for the rare tree!")
+            money += earned_daily
+            print(f"You now have {money} silver coins!")
+            print()
+            print(input("Press Enter to continue..."))
+            os.system("cls")
+        elif random_int == 3:
+            earned_daily = random.randint(1,3)
+            action_left -= 1
+            print(f"You went to your usual spot for chopping down large oak trees.")
+            print(f"As expected, your local carpenter was happy to see you brining him more product.")
+            print(f"For a few hours work, he paid you {earned_daily} silver coins")
+            money += earned_daily
+            print(f"You now have {money} silver coins!")
+            print()
+            print(input("Press Enter to continue..."))
+            os.system("cls")
+
+    elif chosen_job == professions[1]:
+        if random_int == 1:
+            earned_daily = random.randint(1,3)
+            action_left -= 1
+            print(f"You travel to your local coal deposit and gather some coal out of the mine.")
+            print(f"The local tavern was more than happy to take the coal off of your hands.")
+            print(f"The tavern paid you {earned_daily} silver coins")
+            money += earned_daily
+            print(f"You now have {money} silver coins!")
+            print()
+            print(input("Press Enter to continue..."))
+            os.system("cls")
+        elif random_int == 2:
+            earned_daily = random.randint(2,5)
+            action_left -= 1
+            print(f"Your neighbor told you about a funny looking rock he found on his walk.")
+            print(f"You decide to go split it in half. Using your mule and cart, you bring back shiny rocks.")
+            print(f"Your local jewler was intriqued by the rocks and said he would buy them.")
+            print(f"He pays you {earned_daily} for the shiny rocks!")
+            money += earned_daily
+            print(f"You now have {money} silver coins!")
+            print()
+            print(input("Press Enter to continue..."))
+            os.system("cls")
+        elif random_int == 3:
+            earned_daily = random.randint(1,3)
+            action_left -= 1
+            print(f"You went to your usual spot for mining iron ore.")
+            print(f"As expected, your local whitesmith was exicted to have more product")
+            print(f"For a few hours work, he paid you {earned_daily} silver coins")
+            money += earned_daily
+            print(f"You now have {money} silver coins!")
+            print()
+            print(input("Press Enter to continue..."))
+            os.system("cls")
+
+    elif chosen_job == professions[2]:
+        if random_int == 1:
+            earned_daily = random.randint(1,3)
+            action_left -= 1
+            print(f"You travel to your stream to catch some trout.")
+            print(f"The local tavern was more than happy to take the fish off of your hands.")
+            print(f"The tavern paid you {earned_daily} silver coins")
+            money += earned_daily
+            print(f"You now have {money} silver coins!")
+            print()
+            print(input("Press Enter to continue..."))
+            os.system("cls")
+        elif random_int == 2:
+            earned_daily = random.randint(2,5)
+            action_left -= 1
+            print(f"Your neighbor told you about a funny looking fish he saw in a pond near by.")
+            print(f"You decide to go catch the fish.")
+            print(f"A strange man stopped you on your way back and said he'd take the fish off your hands.")
+            print(f"He pays you {earned_daily} for the funny looking fish!")
+            money += earned_daily
+            print(f"You now have {money} silver coins!")
+            print()
+            print(input("Press Enter to continue..."))
+            os.system("cls")
+        elif random_int == 3:
+            earned_daily = random.randint(1,3)
+            action_left -= 1
+            print(f"You went to your usual spot for catching fish.")
+            print(f"As expected, your local chef was exicted to have more product")
+            print(f"For a few hours work, he paid you {earned_daily} silver coins")
+            money += earned_daily
+            print(f"You now have {money} silver coins!")
+            print()
+            print(input("Press Enter to continue..."))
+            os.system("cls")
+
+    elif chosen_job == professions[3]:
+        if random_int == 1:
+            earned_daily = random.randint(1,3)
+            action_left -= 1
+            print(f"You travel to your blackberry bushes to pick some blackberries.")
+            print(f"The local chef was more than happy to take the berries off of your hands.")
+            print(f"The tavern paid you {earned_daily} silver coins")
+            money += earned_daily
+            print(f"You now have {money} silver coins!")
+            print()
+            print(input("Press Enter to continue..."))
+            os.system("cls")
+        elif random_int == 2:
+            earned_daily = random.randint(2,5)
+            action_left -= 1
+            print(f"Your neighbor told you about a funny looking plant he saw on his walk.")
+            print(f"You decide to go gather the bush.")
+            print(f"The local doctor tells you its a rare plant used to treat severe burns.")
+            print(f"He pays you {earned_daily} for the funny looking plant!")
+            money += earned_daily
+            print(f"You now have {money} silver coins!")
+            print()
+            print(input("Press Enter to continue..."))
+            os.system("cls")
+        elif random_int == 3:
+            earned_daily = random.randint(1,3)
+            action_left -= 1
+            print(f"You went to your usual spot for picking an assortment of plants.")
+            print(f"As expected, your local chef was exicted to have more product")
+            print(f"For a few hours work, he paid you {earned_daily} silver coins")
+            money += earned_daily
+            print(f"You now have {money} silver coins!")
+            print()
+            print(input("Press Enter to continue..."))
+            os.system("cls")
 
 def weapon_crafting():
         global iron_ingots
@@ -190,10 +380,11 @@ def inventory():
             os.system("cls")
 
 def dead():
+    global char_name
     global days_survived
 
     print(f"GAME OVER")
-    print(f"You survived {days_survived} days!")
+    print(f"{char_name} survived {days_survived} day(s)!")
     print(input("Press Enter to continue..."))
 
 
@@ -203,6 +394,9 @@ def main():
     global isdead
     global action_left
     global hunger
+    global char_name
+
+    onStartup()
 
     while isdead == False:
 
@@ -225,6 +419,8 @@ def main():
                 elif meals == 0 and hunger == 1:
                     print(f"Before going to bed you decided to have a meal, but you have none again! You enter a berzerk frenzy until one of the towns guards restrains you.")
                     print(f"Sadly, this is where your story ends. You will spend the last of your hungry existance behind bars.")
+                    print(input("Press Enter to continue..."))
+                    os.system("cls")
                     isdead = True
                     break
                 elif meals == 0:
@@ -271,7 +467,7 @@ def main():
         if choice =="4":
             inventory()
 
+    dead()
 
-onStartup()
+
 main()
-dead()
