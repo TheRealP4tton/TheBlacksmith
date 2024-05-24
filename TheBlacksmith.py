@@ -1,6 +1,7 @@
 import random
 import time
 import os
+import string
 
 professions = ["Woodcutter", "Miner", "Fisherman", "Herbalist"]
 
@@ -21,8 +22,8 @@ class Character:
 
 class Inventory:
     def __init__(self):
-        self.resources = {'meal': 0, 'iron ingot': 0}
-        self.currencies = {'gold':0}
+        self.resources = {'meal': 0, 'iron ingot': 10}
+        self.currencies = {'gold':6}
         self.weapons = []
         
 
@@ -43,6 +44,128 @@ class Loot:
         print(len(target.inventory.currencies))
         print(len(target.inventory.resources))
 
+def player_input(prompt, options, style, menu = None, print_options = True):
+    assert options, "no options given"
+    while True:
+        if menu is not None:
+            print(menu)
+
+        print(f"{prompt}:")
+        if style == "shop":
+            for i, option in enumerate(options, start=0):
+                if print_options:
+                    print(f"{i:} {option}")
+
+        elif style == "weapons":
+            n = 1
+            extender = [0]
+            options.extend(extender)
+            if print_options:
+                for weapon in options:
+                    if weapon == 0:
+                        print(f"{n:} Back")
+                    elif weapon == game.player.main_hand:
+                        print(f"{n:} {weapon.quality} {weapon.name} is worth {weapon.value} that does {weapon.damage} damage (Current Mainhand)")
+                        n += 1
+                    else:
+                        print(f"{n:} {weapon.quality} {weapon.name} is worth {weapon.value} that does {weapon.damage} damage")
+                        n += 1
+
+        else:
+        
+            for i, option in enumerate(options, start=1):
+                if print_options:
+                    print(f"{i:} {option}")
+
+        try:
+            chosen = (int(input()))
+        except ValueError:
+            os.system("cls")
+            input("Invalid option.")
+            os.system("cls")
+            continue
+
+        if style == "index":
+            if 0 < chosen <= len(options):
+                os.system("cls")
+                chosen -= 1
+                return chosen
+            else:
+                os.system("cls")
+                input("Invalid option.")
+                os.system("cls")
+
+        if style == "int":
+            if 0 < chosen <= len(options):
+                    os.system("cls")
+                    return chosen
+            else:
+                os.system("cls")
+                input("Invalid option.")
+                os.system("cls")
+
+        if style == "shop":
+            if 0 <= chosen <= len(options):
+                    os.system("cls")
+                    return chosen
+            else:
+                os.system("cls")
+                input("Invalid option.")
+                os.system("cls")
+                
+        if style == "weapons":
+            if 0 < chosen <= len(options):
+                    os.system("cls")
+                    chosen -= 1
+                    return chosen
+            else:
+                os.system("cls")
+                input("Invalid option.")
+                os.system("cls")
+
+def player_input_string(prompt):
+    while True:
+        os.system("cls")
+        print(f"{prompt}:")
+        name = input()
+
+
+        if len(name) < 4:
+            os.system("cls")
+            print("This name is too short!")
+            print(input("Press Enter to continue..."))
+            os.system("cls")
+            continue
+
+        if len(name) > 20:
+            os.system("cls")
+            print("This name is too long!")
+            print(input("Press Enter to continue..."))
+            os.system("cls")
+            continue
+
+        for char in name:
+            if char in string.digits:
+                os.system("cls")
+                print("Your name cannot contain a number!")
+                print(input("Press Enter to continue..."))
+                os.system("cls")
+                break
+        
+        else:
+            os.system("cls")
+            return name
+            
+def wait_for_enter():
+    print(input("Press Enter to continue..."))
+    os.system("cls")
+
+def is_Target_dead(self):
+    if self.health <= 0:
+        return True
+    else:
+        return False
+
 def onStartup():
     global professions
 
@@ -52,78 +175,42 @@ def onStartup():
     print("| |_) | | (_| | (__|   <\__ \ | | | | | | |_| | | |")
     print("|____/|_|\__,_|\___|_|\_\___/_| |_| |_|_|\__|_| |_|")
     print()
-    print(input("Press Enter to continue..."))
-    os.system("cls")
+    wait_for_enter()
 
     print("You will live the simple life of a blacksmith.")
     print("Work, craft items, and sell them to make money needed to survive.")
-    print(input("Press Enter to continue..."))
-    os.system("cls")
+    wait_for_enter()
 
     print("Before you begin, we need to figure out who you are!")
-    print(input("Press Enter to continue..."))
-    os.system("cls")
+    wait_for_enter()
 
-    player = input("What would you like to be called?")
-    os.system("cls")
-
-    while True:
-        if player == "":
-            print("Sadly you cannot be nameless. How fun would that be?")
-            print(input("Press Enter to continue..."))
-            os.system("cls")
-
-            player = input("What would you like to be called?")
-            os.system("cls")
-
-        else:
-            break
+    player = player_input_string("What would you like to be called?")
 
     print(f"Its been decided, you will be called {player} from here on out!")
-    print(input("Press Enter to continue..."))
-    os.system("cls")
+    wait_for_enter()
 
     print("Besides just being a blacksmith, you also have the chance to choose a second profession.")
     print("What will you choose?")
-    print(input("Press Enter to continue..."))
-    os.system("cls")
+    wait_for_enter()
 
-    print("Please choose a secondary profession:")
-    print("1. Woodcutter")
-    print("2. Miner")
-    print("3. Fisherman")
-    print("4. Herbalist")
-    profession_number = input("Which will you choose? ")
     os.system("cls")
+    options = [
+        "Woodcutter",
+        "Miner",
+        "Fisherman",
+        "Herbalist"
+    ]
+    profession_index = player_input("Please choose a secondary profession:", options, "index")
     professions = ["Woodcutter", "Miner", "Fisherman", "Herbalist"]
-    while True:
-        if profession_number == str(profession_number) == "" or int(profession_number) < 0 or int(profession_number) > (len(professions)):
 
-            print("That is not an option.")
-            print(input("Press Enter to continue..."))
-            os.system("cls")
-
-            print("Please choose a secondary profession:")
-            print("1. Woodcutter")
-            print("2. Miner")
-            print("3. Fisherman")
-            print("4. Herbalist")
-            profession_number = input("Which will you choose? ")
-            os.system("cls")
-
-        else:
-            break
-    
-    player_profession = professions[(int(profession_number)-1)]
+    player_profession = professions[profession_index]
 
     print(f"So you've chosen to be a {player_profession}, good choice!")
-    print(input("Press Enter to continue..."))
-    os.system("cls")
+    wait_for_enter()
 
     print(f"Let the story of {player} the Blacksmith unfold")
     print("Try to survive as long as you can.")
-    print(input("Press Enter to continue..."))
-    os.system("cls")
+    wait_for_enter()
     return player, player_profession
 
 def crafting(player):
@@ -136,169 +223,127 @@ def crafting(player):
         print(f"But the craft was going to consume {ingots_used}. Sadly you won't be able to finish the craft and the ingots went to waste.")
         game.player.inventory.resources['iron ingot'] = 0
         print()
-        print(input("Press Enter to continue..."))
-        os.system("cls")
+        wait_for_enter()
         return
         
 
     print("You decided to craft an item of unknown quality...")
     print(f"After many hours, you manage to craft a {newly_crafted.quality} {newly_crafted.name} that does {newly_crafted.damage} damage worth {newly_crafted.value} gold coins!")
-    print(f"You used {ingots_used} in the process")
+    print(f"You used {ingots_used} iron ingots in the process.")
     print()
-    print(f"Would you like to sell it for {newly_crafted.value} or add it to your inventory?")
-    print("1. Sell")
-    print("2. Keep")
-    print()
-    choice = input("What would you like to do?")
+
+    options = [
+        "Sell",
+        "Keep"
+    ]
+    choice = (player_input("What would you like to do?", options, "index", menu = f"Would you like to sell it for {newly_crafted.value} or add it to your inventory?")+1)
     os.system("cls")
 
-    while True:
+    print(choice)
 
-        specific_input = ["1", "2"]
+    if choice == 1:
+        print(f"You sold the {newly_crafted.quality} {newly_crafted.name} for {newly_crafted.value} gold pieces.")
+        game.player.inventory.add_currency('gold', newly_crafted.value)
+        game.player.inventory.resources['iron ingot'] -= ingots_used
+        print(f"You now have {game.player.inventory.currencies['gold']} gold coins!")
+        print()
+        print(input("Press Enter to continue..."))
+        os.system("cls")
+        
 
-        if choice not in specific_input:
-                print("You decided to craft an item of unknown quality...")
-                print(f"After many hours, you manage to craft a {newly_crafted.quality} {newly_crafted.name} that does {newly_crafted.damage} damage worth {newly_crafted.value} gold coins!")
-                print(f"You used {ingots_used} in the process")
-                print()
-                print(f"Would you like to sell it for {newly_crafted.value} or add it to your inventory?")
-                print("1. Sell")
-                print("2. Keep")
-                print()
-                choice = input("What would you like to do?")
-                os.system("cls")
-
-        if choice == "1":
-            print(f"You sold the {newly_crafted.quality} {newly_crafted.name} for {newly_crafted.value} gold pieces.")
-            game.player.inventory.add_currency('gold', newly_crafted.value)
-            game.player.inventory.resources['iron ingot'] -= ingots_used
-            print(f"You now have {game.player.inventory.currencies['gold']} gold coins!")
-            print()
-            print(input("Press Enter to continue..."))
-            os.system("cls")
-            break
-    
-        elif choice == "2":
-            print(f"You decided the keep the {newly_crafted.quality} {newly_crafted.name}.")
-            game.player.inventory.add_weapon(newly_crafted)
-            game.player.inventory.resources['iron ingot'] -= ingots_used
-            print(f"You now have {len(game.player.inventory.weapons)} weapons in your inventory")
-            game.player.main_hand = newly_crafted
-            print(input("Press Enter to continue..."))
-            os.system("cls")
-            break
-
+    elif choice == 2:
+        print(f"You decided the keep the {newly_crafted.quality} {newly_crafted.name}.")
+        game.player.inventory.add_weapon(newly_crafted)
+        game.player.inventory.resources['iron ingot'] -= ingots_used
+        print(f"You now have {len(game.player.inventory.weapons)} weapons in your inventory")
+        print(input("Press Enter to continue..."))
+        os.system("cls")
+        
 def shop():
 
-
-
-    while True:
         print("Welcome to the store! Spend your hard earned currency here!")
         print(f"You currently have {game.player.inventory.currencies['gold']} to spend:")
         print("")
-        print("1. Buy iron ingot | $2 / each")
-        print("2. Buy meal       | $2 / each")
-        print("3. Sell Weapons")
-        print("4. Back")
-        print("")
-        choice = input("What would you like to do?")
+
+        options = [
+            "Buy iron ingot(s)",
+            "Buy meal(s)",
+            "Sell Weapons",
+            "Back"
+        ]
+
+        choice = player_input("What would you like to do?", options, "int")
         os.system("cls")
-
-        if choice == "1":
-            choice = input(f"How many iron ingots would you like to purchase? (0 - {int(game.player.inventory.currencies['gold']/2)})")
-            int_choice = choice
-
-
-            while True:
-                try:
-                    int_choice = int(choice)
-                    break 
-                except:
-                    print("That is not an option.")
-                    print(input("Press Enter to continue..."))
-                    os.system("cls")
-                    choice = input(f"How many iron ingots would you like to purchase? (0 - {int(game.player.inventory.currencies['gold']/2)})")
+    #iron ingots
+        if choice == 1:
+            cost = 2
+            options = []
+            amount = int(game.player.inventory.currencies['gold']/cost)
+            for amount in range(amount):
+                options.append(amount)
+            #players choice
+            choice = player_input("How many iron ingots would you like to purchase?",options,"shop", f"Total Gold: {game.player.inventory.currencies['gold']}\nEach iron ingot costs 2 gold pieces. You have enough gold for {amount}.")
             
-            cost = int_choice * 2
-            if choice == "0":
-                print()
-                os.system("cls")
-            elif game.player.inventory.currencies['gold'] >= cost:
-                game.player.inventory.resources['iron ingot'] += int_choice
-                game.player.inventory.currencies['gold'] -= (int_choice * 2)
-                os.system("cls")
-                print(f"You have purchased {choice} iron ingots. Your total iron ingots is now {game.player.inventory.resources['iron ingot']}")
-                print("")
-                print(input("Press Enter to continue..."))
-                os.system("cls")
-            else:
-                print("You don't seem to have enough currency for that!")
-                print("")
-                print(input("Press Enter to continue..."))
-                os.system("cls")
+            #cost of chosen number
+            cost = choice * 2
+            game.player.inventory.resources['iron ingot'] += choice
+            game.player.inventory.currencies['gold'] -= (choice * cost)
 
-        elif choice == "2":
-            choice = input(f"How many meals would you like to purchase? (0 - {int(game.player.inventory.currencies['gold']/2)})")
-            int_choice = int(choice)
-            cost = int_choice * 2
-            if choice == "0":
-                print()
-                os.system("cls")
-            elif game.player.inventory.currencies['gold'] >= cost:
-                game.player.inventory.resources['meal'] += int_choice
-                game.player.inventory.currencies['gold'] -= (int_choice * 2)
-                os.system("cls")
-                print(f"You have purchased {choice} meals. Your total meals is now {game.player.inventory.resources['meal']}")
-                print("")
-                print(input("Press Enter to continue..."))
-                os.system("cls")
-            else:
-                print("You don't seem to have enough currency for that!")
-                print("")
-                print(input("Press Enter to continue..."))
-                os.system("cls")
+            os.system("cls")
 
-        elif choice == "3":
+            print(f"You have purchased {choice} iron ingots for {cost} golden coins. Your total iron ingots is now {game.player.inventory.resources['iron ingot']}")
+            print("")
+            print(input("Press Enter to continue..."))
+            os.system("cls")
+    #meals
+        if choice == 2:
+            cost = 2
+            options = []
+            amount = int(game.player.inventory.currencies['gold']/cost)
+            for amount in range(amount):
+                options.append(amount)
+            #players choice
+            choice = player_input("How many meals would you like to purchase?",options,"shop", f"Total Gold: {game.player.inventory.currencies['gold']}\nEach meal costs 2 gold pieces. You have enough gold for {amount}.")
+            
+            #cost of chosen number
+            cost = choice * 2
+            game.player.inventory.resources['meals'] += choice
+            game.player.inventory.currencies['gold'] -= (choice * cost)
+
+            os.system("cls")
+
+            print(f"You have purchased {choice} meals for {cost} golden coins. Your total meals is now {game.player.inventory.resources['meals']}")
+            print("")
+            print(input("Press Enter to continue..."))
+            os.system("cls")
+    #weapons
+        elif choice == 3:
             while True:
-                specific_input = range(len(game.player.inventory.weapons)+1)
-
+                options = range(len(game.player.inventory.weapons)+1)
+                
+                #if no weapons
                 if len(game.player.inventory.weapons) == 0:
                     print("You have no weapons!")
-                    print(input("Press Enter to continue..."))
-                    os.system("cls")
+                    wait_for_enter()
                     return
-
+                weapon_list = []
                 print(f"You currently have {len(game.player.inventory.weapons)} weapons!")
-                number_of_weapon = 1
+                number_of_weapon = 0
                 for weapon in game.player.inventory.weapons:
-                    print(f"{number_of_weapon}. {weapon.quality} {weapon.name} is worth {weapon.value} and does {weapon.damage} damage.")
+                    #print(f"{number_of_weapon}. {weapon.quality} {weapon.name} is worth {weapon.value} and does {weapon.damage} damage.")
+                    weapon_list.append(weapon)
                     number_of_weapon += 1
                 print()
-                try:
-                    choice = int(input("Please select which weapon you want to sell:"))
-                except:
-                    os.system("cls")
-                    print("Invalid Input: Returning to main menu to prevent program crash...")
-                    print(input("Press Enter to continue..."))
-                    os.system("cls")
+
+                choice = player_input("Please select which weapon you want to sell",weapon_list,"weapons")
+        
+
+                if choice == len(weapon_list) - 1:
                     return
 
                 os.system("cls")
-
-                if choice not in specific_input:
-                    
-                    print(f"You currently have {len(game.player.inventory.weapons)} weapons!")
-                    number_of_weapon = 1
-                    for weapon in game.player.inventory.weapons:
-                        print(f"{number_of_weapon}. {weapon.quality} {weapon.name} is worth {weapon.value} and does {weapon.damage} damage.")
-                        number_of_weapon += 1
-                    print()
-                    choice = input("Please select which weapon you want to sell:")
-                    os.system("cls")
-                    
-                os.system("cls")
-                choice -= 1
-                
+                print(choice)
+                print(weapon_list)
                 if game.player.inventory.weapons[int(choice)] == game.player.main_hand:
                     print("You can't sell this while it's your current mainhand weapon!")
                     print(input("Press Enter to continue..."))
@@ -315,8 +360,7 @@ def shop():
 
         elif choice == "4":
             os.system("cls")
-            break
-
+          
 def inventory():
     while True:
         specific_input = ["1", "2", "3", "4", "5"]
@@ -450,11 +494,14 @@ def inventory():
             break
             os.system("cls")
 
+def set_dead(self):
+    self.health = 0
+
 def dead():
-    game.player.health = 0
     print("GAME OVER")
     print(f"{game.player.name} survived {game.player.days_survived} days!")
-    print(input("Press Enter to continue..."))
+    wait_for_enter()
+    return    
 
 def sleep():
     meals = game.player.inventory.resources['meal']
@@ -545,18 +592,89 @@ class Weapon:
 
         return weapon
 
+def dungeon(player):
+
+    #check if player has enough actions left for the day
+    if game.player.actions_left < 3:
+        print("As much as you'd like to go dungeon crawling, you fear you're too tired!")
+        print("Maybe try again tomorrow...")
+        print(input("Press Enter to continue..."))
+        os.system("cls")
+        return
+
+    #assigning some variables that will be used later + setting up dungeon loot table
+    game.player.actions_left -= 2
+    dungeon_loot_table = []
+    number_of_enemies = range(3)
+
+
+    print("You decided to venture out to an old cave you seldom heard stories about...")
+    print("But the stories you have heard make you believe many don't live to tell the tale...")
+    print(input("Press Enter to continue..."))
+    os.system("cls")
+
+
+    print("Upon arriving to the cave, it's everything you imagined...")
+    print("There is the faint smell of death and the occasional blood trail as you step into the darkness. Luckily, you brought your torch!")
+    print(input("Press Enter to continue..."))
+    os.system("cls")
+
+    print("Get to the good stuff. Fighting time!")
+    print(input("Press Enter to continue..."))
+    os.system("cls")
+    #counts raiders
+
+    for enemy in number_of_enemies:
+        #creates enemy 
+        game.enemy_maker("enemy")
+        print("You enter combat!")
+        #Sends game to combat state
+        combat()
+        if is_Target_dead(game.player):
+            return
+        dungeon_loot_table.append(game.current_enemy.inventory.weapons[0])
+
+    if is_Target_dead(game.player):
+        return
+
+    print("You did it!")
+    print(input("Press Enter to continue..."))
+    os.system("cls")
+    
+    counter = 1
+    print("The following items have been added to your inventory:")
+    print()
+    for item in dungeon_loot_table:
+        print(f"{counter}. {item.quality} {item.name} that does {item.damage} damage and is worth {item.value}")
+        game.player.inventory.add_weapon(item)
+        counter += 1
+    print()
+    print(input("Press Enter to continue..."))
+    os.system("cls")
+
+    print("After reaping your rewards, you begin walking for the exit. Suddenly, you realize how tired you are.")
+    print(input("Press Enter to continue..."))
+    os.system("cls")
+
+    print("The walk back was uneventful, but you've never been more happy to see the large gates of the city. Behind which, you call home.")
+    print(input("Press Enter to continue..."))
+    os.system("cls")
+ 
 class Game():
 
     startup_values = onStartup()
     player = Character(startup_values[0])
     player.set_profession(startup_values[1])
-    starter_weapon = Weapon.craft_weapon()
-    player.inventory.add_weapon(starter_weapon)
+    player.inventory.add_weapon(Weapon.craft_weapon())
     player.main_hand = player.inventory.weapons[0]
-    player.health = 15
+    player.health = 25
+    current_enemy = None
 
-    def enemy_maker(enemy_name):
-        enemy_name = Character(enemy_name)
+    def enemy_maker(self, enemy_name):
+        enemy_character = Character(enemy_name)
+        enemy_character.inventory.add_weapon(Weapon.craft_weapon())
+        enemy_character.main_hand = enemy_character.inventory.weapons[0]
+        self.current_enemy = enemy_character
 
     def daily_work(player):
         global professions
@@ -715,158 +833,76 @@ class Game():
                 print()
                 print(input("Press Enter to continue..."))
                 os.system("cls")
-                return earned_daily
-        
+                return earned_daily  
+           
+def combat():
+    #grab both mainhand speeds
+    enemy_speed = game.current_enemy.main_hand.speed
+    player_speed = game.player.main_hand.speed
 
-def dungeon(player):
-    game.player.actions_left -= 2
+    if enemy_speed > player_speed:
+        faster = game.current_enemy
+        slower = game.player
+    else:
+        faster = game.player
+        slower = game.current_enemy
 
-    dungeon_loot_table = []
-    number_of_enemies = range(random.randint(1,3))
+    while True:
+        #fighting begins
+        print(f"{faster.name} attacks first, since they have a faster weapon. They deal {faster.main_hand.damage} points of damage!")
+        slower.health -= faster.main_hand.damage
 
-
-    print("You decided to venture out to an old cave you seldom heard stories about...")
-    print("But the stories you have heard make you believe many don't live to tell the tale...")
-    print(input("Press Enter to continue..."))
-    os.system("cls")
-
-
-    print("Upon arriving to the cave, it's everything you imagined...")
-    print("There is the faint smell of death and the occasional blood trail as you step into the darkness. Luckily, you brought your torch!")
-    print(input("Press Enter to continue..."))
-    os.system("cls")
-
-    print("Get to the good stuff. Fighting time!")
-    print(input("Press Enter to continue..."))
-    os.system("cls")
-    number = 1
-
-    for enemy in number_of_enemies:
-        current_enemy = Character(enemy)
-        enemy_weapon = Weapon.craft_weapon()
-        current_enemy.inventory.add_weapon(enemy_weapon)
-        current_enemy.main_hand = current_enemy.inventory.weapons[0]
-        print(f"You are being attacked by raider number {number}! A raider holding a {current_enemy.main_hand.quality} {current_enemy.main_hand.name} runs at you! You prepare yourself as the battle stars...")
-        specific_input = ["1", "2"]
-        while True:
-            damage = game.player.main_hand.damage
-            enemy_damage = current_enemy.main_hand.damage
-            print(f"Enemy health: {current_enemy.health}")
-            print(f"Your health: {game.player.health}")
-            print("")
-            print("1. Attack")
-            print("2. Run away")
-            choice = input("What would you like to do?")
+        #Is player or enemy dead after faster attack?
+        if is_Target_dead(game.current_enemy):
+            print("After that blow, the enemy falls to the ground...")
+            print(f"Your current health is {game.player.health} but is being refilled to full for the next fight (Beta Feature).")
+            game.player.health = 15
+            print(input("Press Enter to continue..."))
             os.system("cls")
+            return
+        elif is_Target_dead(game.player):
+            print("The enemy gets the best of you...")
+            wait_for_enter()
+            return
 
-            if choice not in specific_input:
-                print(f"Enemy health: {current_enemy.health}")
-                print(f"Your health: {game.player.health}")
-                print("")
-                print("1. Attack")
-                print("2. Run away")
-                choice = input("What would you like to do?")
-                os.system("cls")
+        #Slower didn't die, he may attack
+        print(f"In retaliation, {slower.name} attacks and deals {slower.main_hand.damage} points of damage")
+        print()
+        print(input("Press Enter to continue..."))
+        os.system("cls")
+
+        #calculating health
+        faster.health -= slower.main_hand.damage
+        #checking to see slower died
+        if is_Target_dead(game.current_enemy):
+            print("After that blow, the enemy falls to the ground...")
+            print(f"Your current health is {game.player.health} but is being refilled to full for the next fight (Beta Feature).")
+            print(input("Press Enter to continue..."))
+            game.player.health = 15
+            os.system("cls")
+            return
+
+        elif is_Target_dead(game.player):
+            print("The enemy gets the best of you...")
+            wait_for_enter()
+            return
+
+        options = [
+            "Attack",
+            "Run Away"
+        ]
+
+        choice = player_input("What would you like to do?", options, "int",f"Enemy health: {game.current_enemy.health}\nYour health: {game.player.health}\n")
+
+        os.system("cls")
             
-            if choice == "1":
+        if choice == 1:
+            continue
 
-                    #if player has faster weapon:
-                if game.player.main_hand.speed < current_enemy.main_hand.speed:
+        if choice == 2:
+            print("You sprint away for the entrance to the cave. You hear a mocking laugh as you exit...")
+            return
 
-                    print("You have the faster weapon, you attack first!")
-                    print(f"You swing your {game.player.main_hand.name} and deal {damage} points of damage!")
-                    current_enemy.health -= damage
-                    print(input("Press Enter to continue..."))
-                    os.system("cls")
-                    
-                    if current_enemy.health <= 0:
-                        print("After that blow, the enemy falls to the ground...")
-                        print(f"Your current health is {game.player.health} but is being refilled to full for the next fight (Beta Feature).")
-                        #
-                        game.player.health = 15
-                        print(f"New health value: {game.player.health}")
-                        dungeon_loot_table.append(current_enemy.inventory.weapons[0])
-                        number += 1
-                        print(input("Press Enter to continue..."))
-                        os.system("cls")
-                        break
-
-                    else:
-                        
-                        print(f"The raider counter-attacks and deals {enemy_damage} points of damage.")
-                        player.health -= enemy_damage
-                        print(input("Press Enter to continue..."))
-                        os.system("cls")
-
-                        if player.health <= 0:
-                            os.system("cls")
-                            print("Oh no! Your health has fallen to 0...")
-                            print(input("Press Enter to continue..."))
-                            os.system("cls")
-                            return
-                            dead()
-                        
-            
-                    #if enemy has faster weapon:
-                else: 
-                    print("The raider has the faster weapon, he attacks first!")
-                    print(f"The raider attacks you and deals {enemy_damage} points of damage.")
-                    player.health -= enemy_damage
-                    print(input("Press Enter to continue..."))
-                    os.system("cls")
-
-                    if player.health <= 0:
-                            os.system("cls")
-                            print("Oh no! Your health has fallen to 0...")
-                            print(input("Press Enter to continue..."))
-                            os.system("cls")
-                            return
-                            dead()
-                    
-                    print(f"You swing your {game.player.main_hand.name} and deal {damage} points of damage!")
-                    current_enemy.health -= damage
-                    print(input("Press Enter to continue..."))
-                    os.system("cls")
-                    
-                    if current_enemy.health <= 0:
-                        print("After that blow, the enemy falls to the ground...")
-                        print(f"Your current health is {game.player.health} but is being refilled to full for the next fight.")
-                       
-                        game.player.health = 15
-                        print(f"New health value: {game.player.health}")
-                        dungeon_loot_table.append(current_enemy.inventory.weapons[0])
-                        number += 1
-                        print(input("Press Enter to continue..."))
-                        os.system("cls")
-                        break
-
-
-            if choice == "2":
-                print("You sprint away for the entrance to the cave. You hear a mocking laugh as you exit...")
-                return
-    print("You did it!")
-    print(input("Press Enter to continue..."))
-    os.system("cls")
-    
-    counter = 1
-    print("The following items have been added to your inventory:")
-    for item in dungeon_loot_table:
-        print(f"{counter}. {item.quality} {item.name} that does {item.damage} damage and is worth {item.value}")
-        game.player.inventory.add_weapon(item)
-        counter += 1
-    print()
-    print(input("Press Enter to continue..."))
-    os.system("cls")
-
-    print("After reaping your rewards, you begin walking for the exit. Suddenly, you realize how tired you are.")
-    print(input("Press Enter to continue..."))
-    os.system("cls")
-
-    print("The walk back was uneventful, but you've never been more happy to see the large gates of the city. Behind which, you call home.")
-    print(input("Press Enter to continue..."))
-    os.system("cls")
-            
-        
 game = Game()
 
 while game.player.health > 0:
@@ -898,7 +934,7 @@ while game.player.health > 0:
 
     if choice =="5":
         dungeon(game.player)
-
+os.system("cls")
 dead()
 
 
